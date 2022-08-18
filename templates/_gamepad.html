@@ -1,0 +1,27 @@
+<div class="row">
+    <div class="col"></div>
+    <div class="col">
+        <form id="gamepadup" class="" action="{{ url_for('gamepad', direction='up') }}" method="post">
+            <input class="btn btn-primary" type="image" alt="submit" src="/static/img/arrowup.png">
+        </form>
+    </div>
+    <div class="col"></div>
+</div>
+<div class="row">
+    <div class="col">
+        <form id="gamepadleft" class="" action="{{ url_for('gamepad', direction='left') }}" method="post">
+            <input class="btn btn-primary" type="image" alt="submit" src="/static/img/arrowleft.png">
+        </form>
+    </div>
+    <div class="col">
+        <form id="gamepaddown" class="" action="{{ url_for('gamepad', direction='down') }}" method="post">
+            <input class="btn btn-primary" type="image" alt="submit" src="/static/img/arrowdown.png">
+        </form>
+    </div>
+    <div class="col">
+        <form id="gamepadright" class="/" action="{{ url_for('gamepad', direction='right') }}" method="post">
+            <input class="btn btn-primary" type="image" alt="submit" src="/static/img/arrowright.png">
+        </form>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/gamepad.js') }}"></script>

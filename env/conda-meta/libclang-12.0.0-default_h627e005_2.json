@@ -1,0 +1,47 @@
+{
+  "build": "default_h627e005_2",
+  "build_number": 2,
+  "channel": "https://repo.anaconda.com/pkgs/main/win-64",
+  "constrains": [],
+  "depends": [
+    "vc >=14.1,<15.0a0",
+    "vs2015_runtime >=14.16.27012,<15.0a0",
+    "zlib >=1.2.11,<1.3.0a0"
+  ],
+  "extracted_package_dir": "C:\\Users\\skyla\\.conda\\pkgs\\libclang-12.0.0-default_h627e005_2",
+  "features": "",
+  "files": [
+    "Library/bin/libclang.dll"
+  ],
+  "fn": "libclang-12.0.0-default_h627e005_2.conda",
+  "legacy_bz2_md5": "5c9d26bbbc18fc39090d42cd1e2f8b34",
+  "license": "Apache-2.0 WITH LLVM-exception",
+  "license_family": "Apache",
+  "link": {
+    "source": "C:\\Users\\skyla\\.conda\\pkgs\\libclang-12.0.0-default_h627e005_2",
+    "type": 1
+  },
+  "md5": "02a6f95d5a7324022ebb8310507d991d",
+  "name": "libclang",
+  "package_tarball_full_path": "C:\\Users\\skyla\\.conda\\pkgs\\libclang-12.0.0-default_h627e005_2.conda",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "Library/bin/libclang.dll",
+        "path_type": "hardlink",
+        "sha256": "21faea7b181e24f9562f9aa13c8ebcb782e8a00e1848e8fa68031691131d3519",
+        "sha256_in_prefix": "21faea7b181e24f9562f9aa13c8ebcb782e8a00e1848e8fa68031691131d3519",
+        "size_in_bytes": 75100160
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "1f4022574e44f908c769ec4f7b5585a39fd985f7081f07fe43ec928389d8a05f",
+  "size": 18616572,
+  "subdir": "win-64",
+  "timestamp": 1628059123382,
+  "track_features": "",
+  "url": "https://repo.anaconda.com/pkgs/main/win-64/libclang-12.0.0-default_h627e005_2.conda",
+  "version": "12.0.0"
+}

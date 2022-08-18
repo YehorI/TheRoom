@@ -1,0 +1,7 @@
+
+Name: Qt5WebKitWidgets
+Description: Qt WebKitWidgets module
+Version: 5.212.0
+Libs: -LC:/Windows/Temp/abs_92trn2qcd0/croots/recipe/qtwebkit_1658999309255/_h_env/Library/lib -lQt5WebKitWidgets
+Cflags: -IC:/Windows/Temp/abs_92trn2qcd0/croots/recipe/qtwebkit_1658999309255/_h_env/Library/include/qt/QtWebKitWidgets 
+Requires: Qt5Core Qt5Gui Qt5Network Qt5Widgets Qt5WebKit

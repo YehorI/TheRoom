@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col"></div>
+        <div class="col-6 bg-primary">
+            <form action="" method="post">
+                {{ form.csrf_token() }}
+                {% for field in form if field.name not in ("csrf_token", "submit") %}
+                    <div class="form-group-text">
+                        <div class="col">
+                            <div>{{ field.label() }}</div>
+                            <div>{{ field }}</div>
+                        </div>
+                    </div>
+                    {% for error in field.errors %}
+                        {{ error }}
+                    {% endfor %}
+                {% endfor %}
+                <div class="form-group row">
+                    <div class="col">
+                        <br>
+                        {{ form.submit }}
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col"></div>
+    </div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col-6 bg-primary">
+            {% block gamefield %}
+                {% include '_gamefield.html' %}
+            {% endblock %}
+        </div>
+        <div class="col bg-success">
+            <ul class="container mt-4 mx-auto" style="width: 450px;">
+                <li class="list-group-item">
+                    {% block state %}
+                        {% include '_state.html' %}
+                    {% endblock %}
+                </li>
+                <li class="list-group-item">
+                    {% block forms %}
+                        {% if not mov_or_gam %}
+                            <div>{% include '_movement.html' %}</div>
+                        {% else %}
+                            <div>{% include '_gamepad.html' %}</div>
+                        {% endif %}
+                    {% endblock %}
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

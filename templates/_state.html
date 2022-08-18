@@ -1,0 +1,10 @@
+<ol>
+    {% for room in rooms_and_events %}
+        <li>
+            Вы находитесь в {{ room["roomname"] }}
+        </li>
+        <p>
+            {{ room["event"] }}
+        </p>
+    {% endfor %}
+</ol>
