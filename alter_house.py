@@ -199,6 +199,7 @@ class RoomGenerator(House, metaclass=SingletonMeta):
         named_rooms = deepcopy(self.named_rooms) #?
         pass
 
+
 class Renderer():
     def __init__(self):
         pass
