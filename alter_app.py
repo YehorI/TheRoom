@@ -9,7 +9,10 @@ app.secret_key = 'my_key'
 def index():
     form = Preferences()
     if form.validate_on_submit():
-        Game(form.height.data, form.width.data, form.control_type.data, form.generation_type.data)
+        Game(form.height.data,
+            form.width.data,
+            form.control_type.data,
+            form.generation_type.data)
         return redirect(url_for('game'))
     return render_template(
         'index.html',
