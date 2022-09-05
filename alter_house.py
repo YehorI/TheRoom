@@ -373,7 +373,7 @@ class Game(GameGenerator, Renderer, metaclass=SingletonMeta):
             named_list_of_visited_rooms_with_events.append(
                 {
                     'roomname': self.named_rooms[room[0]][room[1]],
-                    'event': 0# !!!!!!!
+                    'event': 0 # !!!!!!!
                 }
             )
         return named_list_of_visited_rooms_with_events
