@@ -1,4 +1,5 @@
 from copy import deepcopy
+from re import S
 from threading import Lock
 import random
 from functools import reduce
@@ -149,10 +150,12 @@ class House(metaclass=SingletonMeta):
                     maze[i][j] = 1
         return maze
 
-class RoomGenerator(House, metaclass=SingletonMeta):
+
+class RoomNameGenerator(House, metaclass=SingletonMeta):
     def __init__(self, height: int =3, width: int =3, gen_type=0) -> None:
         super().__init__(height, width, gen_type)
         self.named_rooms = self.generate_room_names()
+        self.how_many_generate = 0
 
     def generate_room_names(self) -> list[list[str | int]]:
         tokens = [
@@ -162,12 +165,13 @@ class RoomGenerator(House, metaclass=SingletonMeta):
             'Коридор',
             'Склад грязи'
         ]
-        how_much_generate = reduce(
+        self.how_many_generate = reduce(
             lambda x, y: x + y,
             [reduce(lambda x, y: x + y, row) for row in self.rooms]
         )
+
         list_of_names = []
-        for i in range(how_much_generate):
+        for i in range(self.how_many_generate):
             count = 1
             name = random.choice(tokens)
             while name in list_of_names:
@@ -186,19 +190,67 @@ class RoomGenerator(House, metaclass=SingletonMeta):
 
         return named_rooms
 
-    # DOESNT WORK YET
+
+
+class GameGenerator(RoomNameGenerator, metaclass=SingletonMeta):
+    def __init__(self, height: int = 3, width: int = 3, gen_type=0) -> None:
+        super().__init__(height, width, gen_type)
+        self.start_location = self.__set_start_location(self.rooms)
+        self.player_location = deepcopy(self.start_location)
+        self.end_location = self.__set_end_location(self.rooms)
+        self.list_of_events = self.generate_events()
+    
+
+    @staticmethod
+    def __set_start_location(rooms: Rooms) -> list[int, int]:
+        while True:
+            y, x = random.randint(
+                1, len(rooms) - 1), random.randint(1, len(rooms[0]) // 2)
+            if rooms[y][x]:
+                return [y, x]
+
+    @staticmethod
+    def __set_end_location(rooms: list[list[int]]) -> list[int, int]:
+        while True:
+            y, x = random.randint(
+                1, len(rooms) - 1), random.randint(len(rooms[0]) // 2, len(rooms[0]) - 1)
+
+            if rooms[y][x]:
+                return [y, x]
+
+
     def generate_events(self):
-        event_list = [{
-            'name': 'Монстр',
-            'cords': [],
-            'conditions': [],
-            'description': '',
-            'action': ''
-        }]
-
-        named_rooms = deepcopy(self.named_rooms) #?
+        events_in_rooms: list[list[dict]] = deepcopy(self.rooms)
+        event_list = {
+            'random': {
+                'Empty event' : {
+                    'name': '',
+                    'cords': [],
+                    'conditions': [],
+                    'description': '',
+                    'action': ''
+                    },
+                'Monster' : {
+                    'name': 'Монстр',
+                    'cords': [],
+                    'conditions': [],
+                    'description': '',
+                    'action': ''
+                    },
+                'Heal' : {
+                    'name': 'Лечение',
+                    'cords': [],
+                    'conditions': [],
+                    'description': '',
+                    'action': ''
+                }
+        },
+            'default' : {
+                0: 'Вы уперлись в глухую стену',
+                1: 'Вы прошли игру'
+            }
+        }
         pass
-
 
 class Renderer():
     def __init__(self):
@@ -245,7 +297,7 @@ class Renderer():
         rooms: Rooms, visited_rooms: list[list[int, int]], path: str ='X'
         ) -> list[list[str]]:
         for room in visited_rooms:
-            if room != [0, 0, 0]:
+            if sum(room[:2]) != 0: # !!!!!
                 rooms[room[0]][room[1]] = path
         return rooms
 
@@ -257,7 +309,7 @@ class Renderer():
         return rooms
 
 
-class Game(RoomGenerator, Renderer, metaclass=SingletonMeta):
+class Game(GameGenerator, Renderer, metaclass=SingletonMeta):
     def __init__(self,
         height: int =3,
         width: int =3,
@@ -266,9 +318,6 @@ class Game(RoomGenerator, Renderer, metaclass=SingletonMeta):
         ) -> None:
         super().__init__(height, width, gen_type)
         rooms = self.rooms
-        self.start_location = self.__set_start_location(rooms)
-        self.player_location = deepcopy(self.start_location)
-        self.end_location = self.__set_end_location(rooms)
         self.visited_rooms = [] # movement changes this variable
         # if you go in wall == visited_rooms.append([0, 0, 0])
 
@@ -293,17 +342,16 @@ class Game(RoomGenerator, Renderer, metaclass=SingletonMeta):
             self.player_location[1] += directions[direction][1]
             if self.rooms[self.player_location[0]][self.player_location[1]]:
                 list_of_visited_rooms.append(
-                    deepcopy(self.player_location) + [1] # event code 1 = No events
+                    deepcopy(self.player_location)
                 )
             else:
                 self.player_location[0] -= directions[direction][0]
                 self.player_location[1] -= directions[direction][1]
                 list_of_visited_rooms.append(
-                    [0, 0, 0] # event code 0 wall
+                    [0, 0]
                 )
                 break
             if self.player_location == self.end_location:
-                list_of_visited_rooms[-1][2] = 2 # event code 1 win
                 break
 
         self.visited_rooms.extend(list_of_visited_rooms)
@@ -321,39 +369,15 @@ class Game(RoomGenerator, Renderer, metaclass=SingletonMeta):
         ) -> list[dict[str:str]]:
 
         named_list_of_visited_rooms_with_events = []
-        for i in list_of_visited_rooms:
+        for room in list_of_visited_rooms:
             named_list_of_visited_rooms_with_events.append(
                 {
-                    'roomname': self.named_rooms[i[0]][i[1]],
-                    'event': self.__get_event(i[2])
+                    'roomname': self.named_rooms[room[0]][room[1]],
+                    'event': 0# !!!!!!!
                 }
             )
         return named_list_of_visited_rooms_with_events
 
-    @staticmethod
-    def __get_event(event: str) -> str:
-        dict_of_events = {
-            0: 'Вы уперлись в глухую стену',
-            2: 'Вы прошли игру'
-        }
-        return dict_of_events.get(event, '')
-
-    @staticmethod
-    def __set_start_location(rooms: Rooms) -> list[int, int]:
-        while True:
-            y, x = random.randint(
-                1, len(rooms) - 1), random.randint(1, len(rooms[0]) // 2)
-            if rooms[y][x]:
-                return [y, x]
-
-    @staticmethod
-    def __set_end_location(rooms: list[list[int]]) -> list[int, int]:
-        while True:
-            y, x = random.randint(
-                1, len(rooms) - 1), random.randint(len(rooms[0]) // 2, len(rooms[0]) - 1)
-
-            if rooms[y][x]:
-                return [y, x]
 
     def render_game(self) -> list[list[str]]:
         return super().render_game(

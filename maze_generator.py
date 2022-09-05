@@ -49,6 +49,7 @@ def get_maze(width, height):
     # Randomize starting point and set it a cell
     starting_height = int(random.random()*height)
     starting_width = int(random.random()*width)
+
     if (starting_height == 0):
         starting_height += 1
     if (starting_height == height-1):
