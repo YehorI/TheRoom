@@ -193,12 +193,15 @@ class RoomNameGenerator(House, metaclass=SingletonMeta):
 
 
 class GameGenerator(RoomNameGenerator, metaclass=SingletonMeta):
+
+    # start location, end location, events
+
     def __init__(self, height: int = 3, width: int = 3, gen_type=0) -> None:
         super().__init__(height, width, gen_type)
         self.start_location = self.__set_start_location(self.rooms)
         self.player_location = deepcopy(self.start_location)
         self.end_location = self.__set_end_location(self.rooms)
-        self.list_of_events = self.generate_events()
+        self.events_in_rooms = self.generate_events()
     
 
     @staticmethod
@@ -210,7 +213,7 @@ class GameGenerator(RoomNameGenerator, metaclass=SingletonMeta):
                 return [y, x]
 
     @staticmethod
-    def __set_end_location(rooms: list[list[int]]) -> list[int, int]:
+    def __set_end_location(rooms: Rooms) -> list[int, int]:
         while True:
             y, x = random.randint(
                 1, len(rooms) - 1), random.randint(len(rooms[0]) // 2, len(rooms[0]) - 1)
@@ -219,8 +222,8 @@ class GameGenerator(RoomNameGenerator, metaclass=SingletonMeta):
                 return [y, x]
 
 
-    def generate_events(self):
-        events_in_rooms: list[list[dict]] = deepcopy(self.rooms)
+    def generate_events(self) -> list[list[dict]]:
+        events_in_rooms: list[list[int]] = deepcopy(self.rooms)
         event_list = {
             'random': {
                 'Empty event' : {
@@ -246,11 +249,30 @@ class GameGenerator(RoomNameGenerator, metaclass=SingletonMeta):
                 }
         },
             'default' : {
-                0: 'Вы уперлись в глухую стену',
-                1: 'Вы прошли игру'
+                (0, 0): {
+                    'name': 'Вы уперлись в глухую стену',
+                    'cords': [],
+                    'conditions': [],
+                    'description': '',
+                    'action': ''
+                },
+                tuple(self.end_location): {
+                    'name': 'Вы прошли игру',
+                    'cords': [],
+                    'conditions': [],
+                    'description': '',
+                    'action': ''
+                }
             }
         }
-        pass
+        for i, _ in enumerate(events_in_rooms):
+            for j, _ in enumerate(events_in_rooms[0]):
+                events_in_rooms[i][j] = event_list['default'].get(
+                    (i, j),
+                    random.choice(list(event_list['random'].values()))
+                    )
+        return events_in_rooms
+
 
 class Renderer():
     def __init__(self):
@@ -373,7 +395,7 @@ class Game(GameGenerator, Renderer, metaclass=SingletonMeta):
             named_list_of_visited_rooms_with_events.append(
                 {
                     'roomname': self.named_rooms[room[0]][room[1]],
-                    'event': 0 # !!!!!!!
+                    'event': self.events_in_rooms[room[0]][room[1]]['name']
                 }
             )
         return named_list_of_visited_rooms_with_events
